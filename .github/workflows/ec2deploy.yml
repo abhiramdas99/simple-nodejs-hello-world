@@ -50,6 +50,11 @@ jobs:
       run: |
         ssh -o StrictHostKeyChecking=no -i key.pem ubuntu@${{ env.EC2_INSTANCE_IP }} 'sudo docker stop cddemo || true'
         ssh -o StrictHostKeyChecking=no -i key.pem ubuntu@${{ env.EC2_INSTANCE_IP }} 'sudo docker rm cddemo || true'
+
+    - name: remove the old image 
+      run: |
+          ssh -o StrictHostKeyChecking=no -i key.pem ubuntu@${{ env.EC2_INSTANCE_IP }} 'sudo  docker rmi -f $(docker images -aq) || true'
+
     - name: Run new container
       run: |
         ssh -o StrictHostKeyChecking=no -i key.pem ubuntu@${{ env.EC2_INSTANCE_IP }} 'sudo docker run -d --name cddemo -p 80:3000 ${{ env.DOCKERHUB_USERNAME }}/cddemo:latest'
